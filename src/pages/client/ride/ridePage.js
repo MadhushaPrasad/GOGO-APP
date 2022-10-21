@@ -4,14 +4,13 @@ import axios from 'axios';
 import MapContainer from "../../../components/admin/common/map/MapContainer";
 import VueSweetalert2 from "sweetalert2";
 
-
-const Ride = () => {
+function RidePage(props) {
 
     const render = (status: Status) => {
         return <h1>{status}</h1>;
     };
+
     const [trips, setTrips] = useState([]);
-    const [tripID, setTripID] = useState('');
     const [pickUpLocation, setPickUpLocation] = useState('');
     const [dropOffLocation, setDropOffLocation] = useState('');
     const [tripType, setTripType] = useState("OneWay");
@@ -63,91 +62,8 @@ const Ride = () => {
         })
     }
 
-    const editClient = (trip) => {
-        console.log("Hello",trip)
-    }
-
-    const displayAllClients = () => {
-        return trips.map((trip) => {
-            return (<tr itemScope="row" id={trip._id} key={trip._id}>
-                <td>
-                    {trip._id}
-                </td>
-                <td>{trip.trip_Type}</td>
-                <td>
-                    {trip.client}
-                </td>
-                <td>
-                    {trip.driver}
-                </td>
-                <td> {trip.trip_pickUp_Location}</td>
-                <td> {trip.trip_dropOff_Location}</td>
-                <td> {trip.trip_pickUp_Date}</td>
-                <td> {trip.trip_pickUp_Time}</td>
-                <td> {trip.trip_vehicle_Type}</td>
-                <td> {trip.trip_Status}</td>
-
-                <td>
-                    <i className="fa-solid fa-pen me-3 text-primary d-inline" onClick={() => {
-                        editClient(trip)
-                    }}/>
-                    <i className="fa-solid fa-trash-can d-inline me-2 text-danger d-inline" onClick={() => {
-                        deleteClient(trip)
-                    }}/>
-                </td>
-            </tr>)
-        });
-    };
-
-    const updateClient = () => {
-        const newClient = {
-            "client_ID": client_ID,
-            "client_FirstName": client_FirstName,
-            "client_LastName": client_LastName,
-            "client_profilePicture": client_profilePicture,
-            "client_UserName": client_UserName,
-            "client_Email": client_Email,
-            "client_Mobile": client_Mobile,
-            "client_NIC": client_NIC,
-            "client_Password": client_Password,
-            "client_Gender": client_Gender,
-            "client_DOB": client_DOB,
-            "client_Status": client_Status,
-            "client_Address": client_Address,
-        }
-
-        axios.put("http://localhost:8000/api/client/", newClient).then((response) => {
-            if (response.data.result.response) {
-                alert("RidePage Updated");
-                getAll();
-            }
-        })
-    }
-
-    const deleteClient = (trip) => {
-        console.log(trip)
-        axios.delete(`http://localhost:8000/api/client/${trip._id}`).then((response) => {
-            if (response.data.result.response) {
-                alert("RidePage Deleted");
-                getAll();
-            }
-        })
-    }
-
-    const searchTrip = () => {
-        if (tripID === null || tripID === undefined || tripID === "") {
-            alert("Please insert the client ID");
-        } else {
-            axios.get(`http://localhost:8000/api/trip/${tripID}`).then((response) => {
-                let searchedTrips = [];
-                searchedTrips.push(response.data.data)
-                setTrips(searchedTrips);
-            })
-        }
-    };
-
     return (
-        <div>
+        <div className="RideDiv px-4">
             <div className="main_container">
                 <div className="item">
                     <div className="row mt-5 px-3 me-0">
@@ -226,68 +142,16 @@ const Ride = () => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="row mt-5">
+                            <div className="row mt-5 pb-4">
                                 <div className="d-flex justify-content-around align-items-center">
                                     <button type="button" className="btn btnRegister" onClick={() => {
                                         addTrip()
                                     }}>Register
                                     </button>
-                                    <button type="button" className="btn btnUpdate" onClick={() => {
-                                        updateClient()
-                                    }}>Update
-                                    </button>
-                                    <button type="button" className="btn btnDelete">Delete</button>
+                                    <button type="submit" className="btn btnDelete">Cancel</button>
                                 </div>
                             </div>
                         </form>
-                    </div>
-                    <div className="row mt-5 px-3">
-                        <div className="col-6">
-                            <h6 className="mb-0 fw-bold mt-2">Client</h6>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        </div>
-                        <div className="col-6">
-                            <div className="d-flex justify-content-end align-items-center">
-                                <div className="d-flex justify-content-center align-items-center">
-                                    <input id="searchID" type="text" className="form-control col-8 me-5"
-                                           placeholder="ID" onChange={(e) => {
-                                        setClient_ID(e.target.value)
-                                    }}/>
-                                </div>
-                                <div>
-                                    <input type="button" className="form-control btnSearch text-white"
-                                           defaultValue="Search" onClick={() => {
-                                        searchTrip()
-                                    }}/>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div className="table-responsive">
-                            <table className="table table-striped custom-table" id="assignLabsTable">
-                                <thead>
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">First Name</th>
-                                    <th scope="col">Last Name</th>
-                                    <th scope="col">Profile Picture</th>
-                                    <th scope="col">User Name</th>
-                                    <th scope="col">Address</th>
-                                    <th scope="col">Mobile</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">NIC</th>
-                                    <th scope="col">DOB</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col"/>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {displayAllClients()}
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -295,4 +159,4 @@ const Ride = () => {
     );
 }
 
-export default Ride;
+export default RidePage;
